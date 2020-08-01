@@ -18,10 +18,7 @@
 #define _ADAFRUIT_LC709203F_H
 
 #include "Arduino.h"
-#include <Adafruit_BusIO_Register.h>
 #include <Adafruit_I2CDevice.h>
-#include <Adafruit_Sensor.h>
-#include <Wire.h>
 
 #define LC709203F_I2CADDR_DEFAULT 0x0B     ///< LC709203F default i2c address
 #define LC709203F_CMD_THERMISTORB 0x06     ///< Read/write thermistor B
