@@ -28,7 +28,7 @@
 #define LC709203F_CMD_INITRSOC   0x07   ///< Initialize RSOC calculation
 #define LC709203F_CMD_CELLTEMPERATURE   0x08   ///< Read/write batt temperature
 #define LC709203F_CMD_CELLVOLTAGE   0x09   ///< Read batt voltage
-#define LC709203F_CMD_APA   0x0B   /// Adjustment Pack Application
+#define LC709203F_CMD_APA   0x0B   ///< Adjustment Pack Application
 #define LC709203F_CMD_CELLITE   0x0F   ///< Read batt indicator to empty
 #define LC709203F_CMD_ICVERSION   0x11   ///< Read IC version
 #define LC709203F_CMD_ALARMRSOC   0x13   ///< Alarm on percent threshold
@@ -39,23 +39,19 @@
 
 static uint8_t crc8(uint8_t *data, int len);
 
-
-typedef enum {
-  LC709203F_CURRENTDIRECTION_AUT0 = 0x0000,
-  LC709203F_CURRENTDIRECTION_CHARGE = 0x0001,
-  LC709203F_CURRENTDIRECTION_DISCHARGE = 0xFFFF,
-} lc709203_currentdirection_t;
-
+/*!  Battery temperature source */
 typedef enum {
   LC709203F_TEMPERATURE_I2C = 0x0000,
   LC709203F_TEMPERATURE_THERMISTOR = 0x0001,
 } lc709203_tempmode_t;
 
+/*!  Chip power state */
 typedef enum {
   LC709203F_POWER_OPERATE = 0x0001,
   LC709203F_POWER_SLEEP = 0x0002,
 } lc709203_powermode_t;
 
+/*!  Approx battery pack size */
 typedef enum {
   LC709203F_APA_100MAH = 0x08,
   LC709203F_APA_200MAH = 0x0B,

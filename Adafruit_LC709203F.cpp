@@ -126,6 +126,11 @@ bool Adafruit_LC709203F::setTemperatureMode(lc709203_tempmode_t t) {
   return writeWord(LC709203F_CMD_STATUSBIT, (uint16_t)t);
 }
 
+/*!
+ *    @brief  Set the approximate pack size, helps RSOC calculation
+ *    @param apa The lc709203_adjustment_t enumerated approximate cell size
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setPackSize(lc709203_adjustment_t apa) {
   return writeWord(LC709203F_CMD_APA, (uint16_t)apa);
 }
@@ -138,6 +143,11 @@ bool Adafruit_LC709203F::setAlarmVoltage(float voltage) {
   return writeWord(LC709203F_CMD_ALARMVOLT, voltage * 1000);
 }
 
+/*!
+ *    @brief  Set the power mode, LC709203F_POWER_OPERATE or LC709203F_POWER_SLEEP
+ *    @param t The power mode desired
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setPowerMode(lc709203_powermode_t t) {
   return writeWord(LC709203F_CMD_POWERMODE, (uint16_t)t);
 }
