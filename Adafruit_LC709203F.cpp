@@ -45,8 +45,6 @@ Adafruit_LC709203F::~Adafruit_LC709203F(void) {}
  *    @brief  Sets up the hardware and initializes I2C
  *    @param  wire
  *            The Wire object to be used for I2C connections.
- *    @param  sensor_id
- *            The unique ID to differentiate the sensors from others
  *    @return True if initialization was successful, otherwise false.
  */
 bool Adafruit_LC709203F::begin(TwoWire *wire) {
@@ -60,15 +58,15 @@ bool Adafruit_LC709203F::begin(TwoWire *wire) {
     return false;
   }
 
-  if (! setPowerMode(LC709203F_POWER_OPERATE)) 
+  if (!setPowerMode(LC709203F_POWER_OPERATE))
     return false;
 
-  if (! setPackSize(LC709203F_APA_500MAH))
+  if (!setPackSize(LC709203F_APA_500MAH))
     return false;
 
-  if (! setTemperatureMode(LC709203F_TEMPERATURE_THERMISTOR))
+  if (!setTemperatureMode(LC709203F_TEMPERATURE_THERMISTOR))
     return false;
-    
+
   return true;
 }
 
@@ -89,7 +87,6 @@ uint16_t Adafruit_LC709203F::getICversion(void) {
 bool Adafruit_LC709203F::initRSOC(void) {
   return writeWord(LC709203F_CMD_INITRSOC, 0xAA55);
 }
-
 
 /*!
  *    @brief  Get battery voltage
@@ -115,13 +112,19 @@ float Adafruit_LC709203F::cellPercent(void) {
  *    @brief  Get battery thermistor temperature
  *    @return Floating point value from -20 to 60 *C
  */
-float Adafruit_LC709203F::getCellTemperature(void) {  
+float Adafruit_LC709203F::getCellTemperature(void) {
   uint16_t temp = 0;
   readWord(LC709203F_CMD_CELLTEMPERATURE, &temp);
   float tempf = map(temp, 0x9E4, 0xD04, -200, 600);
-  return tempf/10.0;
+  return tempf / 10.0;
 }
 
+/*!
+ *    @brief  Set the temperature mode (external or internal)
+ *    @param t The desired mode: LC709203F_TEMPERATURE_I2C or
+ * LC709203F_TEMPERATURE_THERMISTOR
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setTemperatureMode(lc709203_tempmode_t t) {
   return writeWord(LC709203F_CMD_STATUSBIT, (uint16_t)t);
 }
@@ -135,16 +138,27 @@ bool Adafruit_LC709203F::setPackSize(lc709203_adjustment_t apa) {
   return writeWord(LC709203F_CMD_APA, (uint16_t)apa);
 }
 
+/*!
+ *    @brief  Set the alarm pin to respond to an RSOC percentage level
+ *    @param percent The threshold value, set to 0 to disable alarm
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setAlarmRSOC(uint8_t percent) {
   return writeWord(LC709203F_CMD_ALARMRSOC, percent);
 }
 
+/*!
+ *    @brief  Set the alarm pin to respond to a battery voltage level
+ *    @param voltage The threshold value, set to 0 to disable alarm
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setAlarmVoltage(float voltage) {
   return writeWord(LC709203F_CMD_ALARMVOLT, voltage * 1000);
 }
 
 /*!
- *    @brief  Set the power mode, LC709203F_POWER_OPERATE or LC709203F_POWER_SLEEP
+ *    @brief  Set the power mode, LC709203F_POWER_OPERATE or
+ * LC709203F_POWER_SLEEP
  *    @param t The power mode desired
  *    @return True on successful I2C write
  */
@@ -152,38 +166,47 @@ bool Adafruit_LC709203F::setPowerMode(lc709203_powermode_t t) {
   return writeWord(LC709203F_CMD_POWERMODE, (uint16_t)t);
 }
 
-
-
+/*!
+ *    @brief  Get the thermistor B value (e.g. 3950)
+ *    @return The uint16_t B value
+ */
 uint16_t Adafruit_LC709203F::getThermistorB(void) {
   uint16_t val = 0;
   readWord(LC709203F_CMD_THERMISTORB, &val);
   return val;
 }
 
-
+/*!
+ *    @brief  Set the thermistor B value (e.g. 3950)
+ *    @param b The value to set it to
+ *    @return True on successful I2C write
+ */
 bool Adafruit_LC709203F::setThermistorB(uint16_t b) {
   return writeWord(LC709203F_CMD_THERMISTORB, b);
 }
-
 
 /*!
  *    @brief  Helper that reads 16 bits of CRC data from the chip. Note
  *            this function performs a CRC on data that includes the I2C
  *            write address, command, read address and 2 bytes of response
+ *    @param command The I2C register/command
+ *    @param data Pointer to uint16_t value we will store response
+ *    @return True on successful I2C read
  */
 bool Adafruit_LC709203F::readWord(uint8_t command, uint16_t *data) {
   uint8_t reply[6];
-  reply[0] = LC709203F_I2CADDR_DEFAULT * 2;  // write byte
-  reply[1] = command;         // command / register
-  reply[2] = reply[0] | 0x1;  // read byte
+  reply[0] = LC709203F_I2CADDR_DEFAULT * 2; // write byte
+  reply[1] = command;                       // command / register
+  reply[2] = reply[0] | 0x1;                // read byte
 
-  if (! i2c_dev->write_then_read(&command, 1, reply+3, 3)) {
+  if (!i2c_dev->write_then_read(&command, 1, reply + 3, 3)) {
     return false;
   }
 
   uint8_t crc = crc8(reply, 5);
   // CRC failure?
-  if (crc != reply[5]) return false;
+  if (crc != reply[5])
+    return false;
 
   *data = reply[4];
   *data <<= 8;
@@ -192,23 +215,24 @@ bool Adafruit_LC709203F::readWord(uint8_t command, uint16_t *data) {
   return true;
 }
 
-
 /*!
  *    @brief  Helper that writes 16 bits of CRC data to the chip. Note
  *            this function performs a CRC on data that includes the I2C
  *            write address, command, and 2 bytes of response
+ *    @param command The I2C register/command
+ *    @param data Pointer to uint16_t value we will write to register
+ *    @return True on successful I2C write
  */
 bool Adafruit_LC709203F::writeWord(uint8_t command, uint16_t data) {
   uint8_t send[5];
-  send[0] = LC709203F_I2CADDR_DEFAULT * 2;  // write byte
-  send[1] = command;         // command / register
+  send[0] = LC709203F_I2CADDR_DEFAULT * 2; // write byte
+  send[1] = command;                       // command / register
   send[2] = data & 0xFF;
   send[3] = data >> 8;
   send[4] = crc8(send, 4);
 
-  return i2c_dev->write(send+1, 5);
+  return i2c_dev->write(send + 1, 5);
 }
-
 
 /**
  * Performs a CRC8 calculation on the supplied values.

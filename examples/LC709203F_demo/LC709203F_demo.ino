@@ -23,9 +23,9 @@ void setup() {
 }
 
 void loop() {
-  Serial.println("Batt Voltage: "); Serial.println(lc.cellVoltage(), 3);
-  Serial.println("Batt Percent: "); Serial.println(lc.cellPercent(), 1);
-  Serial.println("Batt Temp: "); Serial.println(lc.getCellTemperature(), 1);
+  Serial.print("Batt Voltage: "); Serial.println(lc.cellVoltage(), 3);
+  Serial.print("Batt Percent: "); Serial.println(lc.cellPercent(), 1);
+  Serial.print("Batt Temp: "); Serial.println(lc.getCellTemperature(), 1);
 
   delay(500);
 }

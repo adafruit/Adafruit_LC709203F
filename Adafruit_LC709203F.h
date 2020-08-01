@@ -23,19 +23,18 @@
 #include <Adafruit_Sensor.h>
 #include <Wire.h>
 
-#define LC709203F_I2CADDR_DEFAULT 0x0B   ///< LC709203F default i2c address
-#define LC709203F_CMD_THERMISTORB   0x06   ///< Read/write thermistor B
-#define LC709203F_CMD_INITRSOC   0x07   ///< Initialize RSOC calculation
-#define LC709203F_CMD_CELLTEMPERATURE   0x08   ///< Read/write batt temperature
-#define LC709203F_CMD_CELLVOLTAGE   0x09   ///< Read batt voltage
-#define LC709203F_CMD_APA   0x0B   ///< Adjustment Pack Application
-#define LC709203F_CMD_CELLITE   0x0F   ///< Read batt indicator to empty
-#define LC709203F_CMD_ICVERSION   0x11   ///< Read IC version
-#define LC709203F_CMD_ALARMRSOC   0x13   ///< Alarm on percent threshold
-#define LC709203F_CMD_ALARMVOLT   0x14   ///< Alarm on voltage threshold
-#define LC709203F_CMD_POWERMODE   0x15   ///< Sets sleep/power mode
-#define LC709203F_CMD_STATUSBIT   0x16   ///< Temperature obtaining method
-
+#define LC709203F_I2CADDR_DEFAULT 0x0B     ///< LC709203F default i2c address
+#define LC709203F_CMD_THERMISTORB 0x06     ///< Read/write thermistor B
+#define LC709203F_CMD_INITRSOC 0x07        ///< Initialize RSOC calculation
+#define LC709203F_CMD_CELLTEMPERATURE 0x08 ///< Read/write batt temperature
+#define LC709203F_CMD_CELLVOLTAGE 0x09     ///< Read batt voltage
+#define LC709203F_CMD_APA 0x0B             ///< Adjustment Pack Application
+#define LC709203F_CMD_CELLITE 0x0F         ///< Read batt indicator to empty
+#define LC709203F_CMD_ICVERSION 0x11       ///< Read IC version
+#define LC709203F_CMD_ALARMRSOC 0x13       ///< Alarm on percent threshold
+#define LC709203F_CMD_ALARMVOLT 0x14       ///< Alarm on voltage threshold
+#define LC709203F_CMD_POWERMODE 0x15       ///< Sets sleep/power mode
+#define LC709203F_CMD_STATUSBIT 0x16       ///< Temperature obtaining method
 
 static uint8_t crc8(uint8_t *data, int len);
 
@@ -60,7 +59,6 @@ typedef enum {
   LC709203F_APA_2000MAH = 0x2D,
   LC709203F_APA_3000MAH = 0x36,
 } lc709203_adjustment_t;
-
 
 /*!
  *    @brief  Class that stores state and functions for interacting with
@@ -94,7 +92,6 @@ protected:
   Adafruit_I2CDevice *i2c_dev = NULL; ///< Pointer to I2C bus interface
   bool readWord(uint8_t address, uint16_t *data);
   bool writeWord(uint8_t command, uint16_t data);
-
 };
 
 #endif
