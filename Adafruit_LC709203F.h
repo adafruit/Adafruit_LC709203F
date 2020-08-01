@@ -25,9 +25,17 @@
 
 #define LC709203F_I2CADDR_DEFAULT 0x0B   ///< LC709203F default i2c address
 #define LC709203F_CMD_THERMISTORB   0x06   ///< Read/write thermistor B
+#define LC709203F_CMD_INITRSOC   0x07   ///< Initialize RSOC calculation
+#define LC709203F_CMD_CELLTEMPERATURE   0x08   ///< Read/write batt temperature
 #define LC709203F_CMD_CELLVOLTAGE   0x09   ///< Read batt voltage
+#define LC709203F_CMD_APA   0x0B   /// Adjustment Pack Application
 #define LC709203F_CMD_CELLITE   0x0F   ///< Read batt indicator to empty
 #define LC709203F_CMD_ICVERSION   0x11   ///< Read IC version
+#define LC709203F_CMD_ALARMRSOC   0x13   ///< Alarm on percent threshold
+#define LC709203F_CMD_ALARMVOLT   0x14   ///< Alarm on voltage threshold
+#define LC709203F_CMD_POWERMODE   0x15   ///< Sets sleep/power mode
+#define LC709203F_CMD_STATUSBIT   0x16   ///< Temperature obtaining method
+
 
 static uint8_t crc8(uint8_t *data, int len);
 
@@ -37,6 +45,26 @@ typedef enum {
   LC709203F_CURRENTDIRECTION_CHARGE = 0x0001,
   LC709203F_CURRENTDIRECTION_DISCHARGE = 0xFFFF,
 } lc709203_currentdirection_t;
+
+typedef enum {
+  LC709203F_TEMPERATURE_I2C = 0x0000,
+  LC709203F_TEMPERATURE_THERMISTOR = 0x0001,
+} lc709203_tempmode_t;
+
+typedef enum {
+  LC709203F_POWER_OPERATE = 0x0001,
+  LC709203F_POWER_SLEEP = 0x0002,
+} lc709203_powermode_t;
+
+typedef enum {
+  LC709203F_APA_100MAH = 0x08,
+  LC709203F_APA_200MAH = 0x0B,
+  LC709203F_APA_500MAH = 0x10,
+  LC709203F_APA_1000MAH = 0x19,
+  LC709203F_APA_2000MAH = 0x2D,
+  LC709203F_APA_3000MAH = 0x36,
+} lc709203_adjustment_t;
+
 
 /*!
  *    @brief  Class that stores state and functions for interacting with
@@ -48,11 +76,23 @@ public:
   ~Adafruit_LC709203F();
 
   bool begin(TwoWire *wire = &Wire);
+  bool initRSOC(void);
+
+  bool setPowerMode(lc709203_powermode_t t);
+  bool setPackSize(lc709203_adjustment_t apa);
+
   uint16_t getICversion(void);
   float cellVoltage(void);
   float cellPercent(void);
+
   uint16_t getThermistorB(void);
   bool setThermistorB(uint16_t b);
+
+  bool setTemperatureMode(lc709203_tempmode_t t);
+  float getCellTemperature(void);
+
+  bool setAlarmRSOC(uint8_t percent);
+  bool setAlarmVoltage(float voltage);
 
 protected:
   Adafruit_I2CDevice *i2c_dev = NULL; ///< Pointer to I2C bus interface

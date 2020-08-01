@@ -60,30 +60,89 @@ bool Adafruit_LC709203F::begin(TwoWire *wire) {
     return false;
   }
 
-  getICversion();
+  if (! setPowerMode(LC709203F_POWER_OPERATE)) 
+    return false;
+
+  if (! setPackSize(LC709203F_APA_500MAH))
+    return false;
+
+  if (! setTemperatureMode(LC709203F_TEMPERATURE_THERMISTOR))
+    return false;
+    
   return true;
 }
 
-
+/*!
+ *    @brief  Get IC LSI version
+ *    @return 16-bit value read from LC709203F_CMD_ICVERSION register
+ */
 uint16_t Adafruit_LC709203F::getICversion(void) {
   uint16_t vers = 0;
   readWord(LC709203F_CMD_ICVERSION, &vers);
   return vers;
 }
 
+/*!
+ *    @brief  Initialize the RSOC algorithm
+ *    @return True on I2C command success
+ */
+bool Adafruit_LC709203F::initRSOC(void) {
+  return writeWord(LC709203F_CMD_INITRSOC, 0xAA55);
+}
 
+
+/*!
+ *    @brief  Get battery voltage
+ *    @return Floating point value read in Volts
+ */
 float Adafruit_LC709203F::cellVoltage(void) {
   uint16_t voltage = 0;
   readWord(LC709203F_CMD_CELLVOLTAGE, &voltage);
   return voltage / 1000.0;
 }
 
-
+/*!
+ *    @brief  Get battery state in percent (0-100%)
+ *    @return Floating point value from 0 to 100.0
+ */
 float Adafruit_LC709203F::cellPercent(void) {
   uint16_t percent = 0;
   readWord(LC709203F_CMD_CELLITE, &percent);
-  return 100 - (percent / 10.0);
+  return percent / 10.0;
 }
+
+/*!
+ *    @brief  Get battery thermistor temperature
+ *    @return Floating point value from -20 to 60 *C
+ */
+float Adafruit_LC709203F::getCellTemperature(void) {  
+  uint16_t temp = 0;
+  readWord(LC709203F_CMD_CELLTEMPERATURE, &temp);
+  float tempf = map(temp, 0x9E4, 0xD04, -200, 600);
+  return tempf/10.0;
+}
+
+bool Adafruit_LC709203F::setTemperatureMode(lc709203_tempmode_t t) {
+  return writeWord(LC709203F_CMD_STATUSBIT, (uint16_t)t);
+}
+
+bool Adafruit_LC709203F::setPackSize(lc709203_adjustment_t apa) {
+  return writeWord(LC709203F_CMD_APA, (uint16_t)apa);
+}
+
+bool Adafruit_LC709203F::setAlarmRSOC(uint8_t percent) {
+  return writeWord(LC709203F_CMD_ALARMRSOC, percent);
+}
+
+bool Adafruit_LC709203F::setAlarmVoltage(float voltage) {
+  return writeWord(LC709203F_CMD_ALARMVOLT, voltage * 1000);
+}
+
+bool Adafruit_LC709203F::setPowerMode(lc709203_powermode_t t) {
+  return writeWord(LC709203F_CMD_POWERMODE, (uint16_t)t);
+}
+
+
 
 uint16_t Adafruit_LC709203F::getThermistorB(void) {
   uint16_t val = 0;
