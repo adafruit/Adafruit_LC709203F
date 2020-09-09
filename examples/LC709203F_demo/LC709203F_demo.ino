@@ -12,10 +12,10 @@ void setup() {
     while (1) delay(10);
   }
   Serial.println(F("Found LC709203F"));
-  Serial.println("Version: 0x"); Serial.println(lc.getICversion(), HEX);
+  Serial.print("Version: 0x"); Serial.println(lc.getICversion(), HEX);
 
   lc.setThermistorB(3950);
-  Serial.println("Thermistor B = "); Serial.println(lc.getThermistorB());
+  Serial.print("Thermistor B = "); Serial.println(lc.getThermistorB());
 
   lc.setPackSize(LC709203F_APA_500MAH);
 
