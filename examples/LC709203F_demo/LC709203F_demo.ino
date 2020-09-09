@@ -27,5 +27,5 @@ void loop() {
   Serial.print("Batt Percent: "); Serial.println(lc.cellPercent(), 1);
   Serial.print("Batt Temp: "); Serial.println(lc.getCellTemperature(), 1);
 
-  delay(500);
+  delay(2000);  // dont query too often!
 }
