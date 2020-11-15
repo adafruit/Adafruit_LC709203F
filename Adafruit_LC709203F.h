@@ -26,12 +26,15 @@
 #define LC709203F_CMD_CELLTEMPERATURE 0x08 ///< Read/write batt temperature
 #define LC709203F_CMD_CELLVOLTAGE 0x09     ///< Read batt voltage
 #define LC709203F_CMD_APA 0x0B             ///< Adjustment Pack Application
+#define LC709203F_CMD_RSOC 0x0D            ///< Read state of charge
 #define LC709203F_CMD_CELLITE 0x0F         ///< Read batt indicator to empty
 #define LC709203F_CMD_ICVERSION 0x11       ///< Read IC version
+#define LC709203F_CMD_BATTPROF 0x12        ///< Set the battery profile
 #define LC709203F_CMD_ALARMRSOC 0x13       ///< Alarm on percent threshold
 #define LC709203F_CMD_ALARMVOLT 0x14       ///< Alarm on voltage threshold
 #define LC709203F_CMD_POWERMODE 0x15       ///< Sets sleep/power mode
 #define LC709203F_CMD_STATUSBIT 0x16       ///< Temperature obtaining method
+#define LC709203F_CMD_PARAMETER 0x1A       ///< Batt profile code
 
 static uint8_t crc8(uint8_t *data, int len);
 
@@ -78,6 +81,9 @@ public:
 
   uint16_t getThermistorB(void);
   bool setThermistorB(uint16_t b);
+
+  uint16_t getBattProfile(void);
+  bool setBattProfile(uint16_t b);
 
   bool setTemperatureMode(lc709203_tempmode_t t);
   float getCellTemperature(void);

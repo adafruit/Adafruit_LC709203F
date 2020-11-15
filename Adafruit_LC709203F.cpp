@@ -64,6 +64,17 @@ bool Adafruit_LC709203F::begin(TwoWire *wire) {
   if (!setPackSize(LC709203F_APA_500MAH))
     return false;
 
+  /*
+  uint16_t param ;
+  readWord(LC709203F_CMD_PARAMETER, &param);
+  Serial.print("Profile Param: ");
+  Serial.println(param, HEX);
+  */
+
+  // use 4.2V profile
+  if (!setBattProfile(0x1))
+    return false;
+
   if (!setTemperatureMode(LC709203F_TEMPERATURE_THERMISTOR))
     return false;
 
@@ -186,6 +197,25 @@ bool Adafruit_LC709203F::setThermistorB(uint16_t b) {
 }
 
 /*!
+ *    @brief  Get the battery profile parameter
+ *    @return The uint16_t profile value (0 or 1)
+ */
+uint16_t Adafruit_LC709203F::getBattProfile(void) {
+  uint16_t val = 0;
+  readWord(LC709203F_CMD_BATTPROF, &val);
+  return val;
+}
+
+/*!
+ *    @brief  Set the battery profile parameter
+ *    @param b The value to set it to (0 or 1)
+ *    @return True on successful I2C write
+ */
+bool Adafruit_LC709203F::setBattProfile(uint16_t b) {
+  return writeWord(LC709203F_CMD_BATTPROF, b);
+}
+
+/*!
  *    @brief  Helper that reads 16 bits of CRC data from the chip. Note
  *            this function performs a CRC on data that includes the I2C
  *            write address, command, read address and 2 bytes of response
@@ -231,7 +261,7 @@ bool Adafruit_LC709203F::writeWord(uint8_t command, uint16_t data) {
   send[3] = data >> 8;
   send[4] = crc8(send, 4);
 
-  return i2c_dev->write(send + 1, 5);
+  return i2c_dev->write(send + 1, 4);
 }
 
 /**
