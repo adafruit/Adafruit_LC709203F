@@ -74,6 +74,7 @@ public:
 
   bool setPowerMode(lc709203_powermode_t t);
   bool setPackSize(lc709203_adjustment_t apa);
+  bool setPackAPA(uint8_t apa_value);
 
   uint16_t getICversion(void);
   float cellVoltage(void);
