@@ -150,8 +150,7 @@ bool Adafruit_LC709203F::setPackSize(lc709203_adjustment_t apa) {
 }
 
 /*!
- *    @brief  Set battery adjustment pack application (APA) value, 
- *            per LC709203F datasheet
+ *    @brief  Set battery APA value, per LC709203F datasheet
  *    @param apa_value 8-bit APA value to use for the attached battery
  *    @return True on successful I2C write
  */
