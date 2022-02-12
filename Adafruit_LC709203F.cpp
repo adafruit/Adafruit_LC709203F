@@ -150,6 +150,15 @@ bool Adafruit_LC709203F::setPackSize(lc709203_adjustment_t apa) {
 }
 
 /*!
+ *    @brief  Set battery APA value, per LC709203F datasheet
+ *    @param apa_value 8-bit APA value to use for the attached battery
+ *    @return True on successful I2C write
+ */
+bool Adafruit_LC709203F::setPackAPA(uint8_t apa_value) {
+  return writeWord(LC709203F_CMD_APA, (uint16_t)apa_value);
+}
+
+/*!
  *    @brief  Set the alarm pin to respond to an RSOC percentage level
  *    @param percent The threshold value, set to 0 to disable alarm
  *    @return True on successful I2C write
