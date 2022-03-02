@@ -7,6 +7,17 @@ void setup() {
   delay(10);
   Serial.println("\nAdafruit LC709203F demo");
 
+  // For the Feather ESP32-S2, we need to enable I2C power first!
+  // this section can be deleted for other boards
+#if defined(ARDUINO_ADAFRUIT_FEATHER_ESP32S2)
+  // turn on the I2C power by setting pin to opposite of 'rest state'
+  pinMode(PIN_I2C_POWER, INPUT);
+  delay(1);
+  bool polarity = digitalRead(PIN_I2C_POWER);
+  pinMode(PIN_I2C_POWER, OUTPUT);
+  digitalWrite(PIN_I2C_POWER, !polarity);
+#endif
+
   if (!lc.begin()) {
     Serial.println(F("Couldnt find Adafruit LC709203F?\nMake sure a battery is plugged in!"));
     while (1) delay(10);
