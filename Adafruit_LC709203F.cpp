@@ -34,6 +34,9 @@
 
 #include "Adafruit_LC709203F.h"
 
+static uint8_t lc709_crc8(uint8_t *data, int len);
+
+
 /*!
  *    @brief  Instantiates a new LC709203F class
  */
@@ -242,7 +245,7 @@ bool Adafruit_LC709203F::readWord(uint8_t command, uint16_t *data) {
     return false;
   }
 
-  uint8_t crc = crc8(reply, 5);
+  uint8_t crc = lc709_crc8(reply, 5);
   // CRC failure?
   if (crc != reply[5])
     return false;
@@ -268,7 +271,7 @@ bool Adafruit_LC709203F::writeWord(uint8_t command, uint16_t data) {
   send[1] = command;                       // command / register
   send[2] = data & 0xFF;
   send[3] = data >> 8;
-  send[4] = crc8(send, 4);
+  send[4] = lc709_crc8(send, 4);
 
   return i2c_dev->write(send + 1, 4);
 }
@@ -281,7 +284,7 @@ bool Adafruit_LC709203F::writeWord(uint8_t command, uint16_t data) {
  *
  * @return The computed CRC8 value.
  */
-static uint8_t crc8(uint8_t *data, int len) {
+static uint8_t lc709_crc8(uint8_t *data, int len) {
   const uint8_t POLYNOMIAL(0x07);
   uint8_t crc(0x00);
 
