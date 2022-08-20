@@ -34,9 +34,14 @@ void setup() {
 }
 
 void loop() {
-  Serial.print("Batt Voltage: "); Serial.println(lc.cellVoltage(), 3);
-  Serial.print("Batt Percent: "); Serial.println(lc.cellPercent(), 1);
-  Serial.print("Batt Temp: "); Serial.println(lc.getCellTemperature(), 1);
+  Serial.print("Batt_Voltage:");
+  Serial.print(lc.cellVoltage(), 3);
+  Serial.print("\t");
+  Serial.print("Batt_Percent:");
+  Serial.print(lc.cellPercent(), 1);
+  Serial.print("\t");
+  Serial.print("Batt_Temp:");
+  Serial.println(lc.getCellTemperature(), 1);
 
   delay(2000);  // dont query too often!
 }
