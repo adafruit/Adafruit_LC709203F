@@ -36,8 +36,6 @@
 #define LC709203F_CMD_STATUSBIT 0x16       ///< Temperature obtaining method
 #define LC709203F_CMD_PARAMETER 0x1A       ///< Batt profile code
 
-static uint8_t crc8(uint8_t *data, int len);
-
 /*!  Battery temperature source */
 typedef enum {
   LC709203F_TEMPERATURE_I2C = 0x0000,
