@@ -36,7 +36,6 @@
 
 static uint8_t lc709_crc8(uint8_t *data, int len);
 
-
 /*!
  *    @brief  Instantiates a new LC709203F class
  */
